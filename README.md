@@ -1,44 +1,39 @@
 # Amigo Oculto — sorteador online
 
-Site estático responsivo para organizar um amigo oculto com 2 ou mais participantes, sem limite fixo de pessoas. Funciona no GitHub Pages, sem backend, Node.js ou banco de dados.
+Site estático responsivo para organizar amigo oculto com 2 ou mais participantes, sem limite fixo. Funciona no GitHub Pages, sem backend ou banco de dados.
 
 ## Como usar
 
-1. Cadastre os nomes (no mínimo 2). Adicione ou remova participantes.
-2. Clique em **Fazer sorteio**. O site cria um ciclo aleatório: ninguém tira o próprio nome e cada pessoa é sorteada uma vez.
-3. Libere o link individual de cada participante e copie ou envie pelo WhatsApp.
-4. O participante abre seu convite, aceita e revela o resultado. Seu aceite gera um código individual (AC-...).
-5. Ele envia o código ao organizador pelo WhatsApp ou outro meio. No painel, cole o código em **Registrar aceite do participante**.
-6. O painel registra o aceite e atualiza o progresso. O próximo sorteio só é permitido após todos os links serem liberados e todos os aceites serem registrados.
+1. Cadastre os nomes (mínimo de 2) e adicione quantas pessoas quiser.
+2. Clique em **Fazer sorteio**. Ninguém tira o próprio nome e cada pessoa é sorteada uma vez.
+3. Copie o link individual ou envie diretamente pelo WhatsApp.
+4. Cada participante abre seu link e clica em **Revelar meu amigo oculto**. Não há códigos ou confirmação obrigatória.
+5. O sorteio vigente fica salvo no navegador. Mesmo após fechar ou recarregar a página, a lista e os links permanecem iguais.
+6. Quando desejar, o organizador clica em **Encerrar sorteio** e confirma. O sorteio ativo é removido, mantendo os nomes para facilitar um novo sorteio.
 
 ## Persistência e privacidade
 
-- Os nomes, sorteio ativo, links, estados de liberação e aceites ficam no LocalStorage do navegador do organizador.
-- O sorteio não é apagado automaticamente ao recarregar, fechar ou concluir a página. Após a conclusão, o organizador pode escolher iniciar outro sorteio.
-- Se o participante aceitar em outra aba do mesmo navegador e perfil do organizador, o aceite é registrado automaticamente quando possível. Em outro dispositivo, o código precisa ser enviado e registrado manualmente.
-- O aceite do participante também é salvo no navegador dele. O link continua válido após recarregar.
-- LocalStorage não é um banco de dados compartilhado: apagar os dados do site, trocar de dispositivo ou perfil, ou usar navegação anônima pode causar perda de dados. Use o mesmo navegador e endereço do site.
-- Links v1, gerados antes desta atualização, ainda podem revelar o resultado, mas não possuem código de confirmação e não são recuperáveis se o sorteio antigo já foi perdido.
-- Cada convite contém somente o resultado individual e seu código, protegido com AES-GCM. A chave está no próprio link: qualquer pessoa que tenha acesso ao link pode revelar o resultado. Não compartilhe os links em grupos.
-- Liberação e aceite são controles locais de fluxo, não autenticação ou prova de identidade. Um organizador com acesso técnico aos links pode inspecioná-los.
+- Os nomes e os links do sorteio ativo são salvos no LocalStorage do navegador do organizador.
+- Use o mesmo dispositivo, navegador, perfil e endereço do site. Limpar os dados do site, usar navegação anônima ou trocar de aparelho pode causar perda dos dados.
+- Sorteios salvos na versão anterior são preservados; links das versões 1, 2 e 3 continuam abrindo normalmente.
+- Cada convite contém apenas o resultado individual, protegido com AES-GCM. A chave está no próprio link: qualquer pessoa que tenha acesso a ele pode revelar o resultado.
+- Encerrar um sorteio remove a lista local, mas **não revoga os links já enviados**. Os convites são autocontidos e continuam funcionando sem um servidor.
+- Não compartilhe os links em grupos. Os dados de participantes não são enviados ao repositório.
 
 ## Publicar no GitHub Pages
 
-O workflow em `.github/workflows/deploy-pages.yml` publica automaticamente a branch main.
+O workflow em `.github/workflows/deploy-pages.yml` publica a branch main.
 
 1. No repositório, abra **Settings → Pages**.
 2. Em **Build and deployment**, selecione **GitHub Actions**.
 3. Em **Actions**, execute **Publicar Sorteador (GitHub Pages)** se necessário.
-4. Acompanhe a execução até a publicação.
 
 Endereço previsto: https://ilgnerbecheleni.github.io/sorteador/
 
-O plano GitHub Free exige repositório público para GitHub Pages. Um repositório privado pode exigir um plano compatível. O sorteio e os convites não são gravados no repositório.
-
 ## Arquitetura
 
-- HTML, CSS e JavaScript nativos em `index.html`
-- LocalStorage para persistência do organizador e do participante
-- Web Crypto API (AES-GCM, números aleatórios seguros)
-- HTTPS necessário para o funcionamento da Web Crypto API
+- HTML, CSS e JavaScript em `index.html`
+- LocalStorage para persistência local
+- Web Crypto API (AES-GCM e aleatoriedade criptográfica)
+- HTTPS para utilização da Web Crypto API
 - GitHub Actions para deploy estático
