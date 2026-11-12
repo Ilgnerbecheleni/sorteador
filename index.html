@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#103c33" />
-  <meta name="description" content="Organize um amigo oculto com qualquer quantidade de participantes, links individuais e confirmação de aceite." />
+  <meta name="description" content="Organize um amigo oculto com qualquer quantidade de participantes e links individuais, salvos até você encerrar." />
   <title>Amigo Oculto — sorteador online</title>
   <style>
     :root {
@@ -99,13 +99,6 @@
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
   
     .input-wrap .remove { border:0; background:transparent; color:#a74532; font-size:19px; padding:5px; flex-shrink:0; }
-    .progress { height:10px; border-radius:999px; background:#e4ece2; overflow:hidden; margin:12px 0 7px; }
-    .progress span { display:block; height:100%; width:0; background:var(--forest); transition:width .2s; }
-    .status { display:inline-block; font-size:11px; font-weight:800; padding:5px 8px; border-radius:8px; white-space:nowrap; background:#f5eee3; color:#795d36; }
-    .status.released { background:#fff0dd; color:#86591c; }
-    .status.accepted { background:#e0f2e5; color:#286343; }
-    .receipt { overflow-wrap:anywhere; padding:12px; background:#eef6ed; border:1px dashed #a7c8b5; border-radius:10px; font:600 14px ui-monospace,monospace; color:var(--forest); user-select:all; }
-    .confirm-input { width:100%; border:1px solid #cbdacc; background:#fbfbf6; border-radius:10px; padding:12px; margin:8px 0; color:var(--forest); }
     .primary:disabled,.secondary:disabled { opacity:.5; cursor:not-allowed; transform:none; }
     .subtle { color:var(--muted); font-size:12px; line-height:1.5; margin:8px 0; }
     .count { white-space:normal; text-align:right; }
@@ -125,7 +118,7 @@
       <section class="intro">
         <div class="eyebrow">Sorteio simples e divertido</div>
         <h1>O presente é surpresa. <span class="accent">O sorteio é fácil.</span></h1>
-        <p class="lead">Cadastre quantas pessoas quiser. Libere os convites individuais e acompanhe os aceites — mesmo depois de fechar a página.</p>
+        <p class="lead">Cadastre quantas pessoas quiser, envie os links individuais e mantenha o sorteio salvo até você decidir encerrá-lo.</p>
         <div class="features">
           <div class="feature"><span class="check" aria-hidden="true">✓</span> Ninguém tira a si mesmo</div>
           <div class="feature"><span class="check" aria-hidden="true">✓</span> Um sorteado por pessoa</div>
@@ -146,21 +139,13 @@
           <p class="note"><span aria-hidden="true">🔒</span><span>Os nomes e o sorteio ficam salvos neste navegador. Use o mesmo aparelho e perfil para acompanhar.</span></p>
         </div>
         <div id="results-panel" class="results">
-          <div class="panel-head"><h2>Sorteio realizado! 🎉</h2><span id="draw-count" class="count"></span></div>
-          <p class="hint">Libere os links individualmente. Cada participante aceita o convite, revela seu resultado e devolve um código de confirmação.</p>
-          <div class="progress" role="progressbar" aria-label="Participantes confirmados" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><span id="progress-fill"></span></div>
-          <p class="subtle" id="progress-text" aria-live="polite"></p>
+          <div class="panel-head"><h2>Sorteio vigente 🎁</h2><span id="draw-count" class="count"></span></div>
+          <p class="hint">Envie o link individual para cada pessoa. O sorteio e todos os links ficam salvos neste navegador até você encerrar.</p>
           <div id="draw-error" class="error" role="alert"></div>
           <div id="results-list"></div>
-          <div style="margin-top:22px;">
-            <label for="receipt-input">Registrar aceite do participante</label>
-            <input id="receipt-input" class="confirm-input" placeholder="Cole o código recebido (AC-...)" autocomplete="off" spellcheck="false" />
-            <button id="register-receipt" class="primary" type="button">Confirmar aceite</button>
-            <p id="receipt-message" class="subtle" aria-live="polite">O aceite de outro aparelho precisa ser registrado aqui.</p>
-          </div>
-          <div class="warning">🔒 O sorteio fica salvo até todos os links serem liberados e todos os aceites registrados. Limpar os dados do navegador ou usar outro aparelho pode apagar ou impedir o acesso ao sorteio. Não compartilhe links em grupos.</div>
-          <button id="new-draw" class="primary" type="button" style="margin-top:18px;" disabled>Fazer outro sorteio</button>
-          <p id="new-draw-help" class="subtle"></p>
+          <div class="warning">🔒 O sorteio não é apagado ao recarregar ou fechar a página. Use o mesmo navegador e endereço do site. Limpar os dados do navegador pode apagar o sorteio. Não compartilhe links em grupos.</div>
+          <button id="end-draw" class="primary" type="button" style="margin-top:18px;background:#a74532;">Encerrar sorteio</button>
+          <p class="subtle">Somente o organizador encerra o sorteio. Não é necessário receber confirmação dos participantes.</p>
         </div>
       </section>
     </main>
@@ -170,9 +155,9 @@
         <span class="gift-emoji" aria-hidden="true">🎁</span>
         <div class="eyebrow">Seu amigo oculto</div>
         <h1>Uma surpresa espera por você!</h1>
-        <p id="invite-lead" class="lead">Aceite o convite para descobrir quem você tirou e receber seu código de confirmação.</p>
+        <p id="invite-lead" class="lead">Seu convite está pronto! Clique para descobrir quem você tirou.</p>
         <div id="participant-error" class="error" role="alert"></div>
-        <button id="reveal-button" class="primary" type="button">✓ Aceitar e revelar meu amigo oculto</button>
+        <button id="reveal-button" class="primary" type="button">✨ Revelar meu amigo oculto</button>
         <div id="revealed" class="reveal-area hidden" aria-live="polite">
           <div class="reveal-name" id="sender-name"></div>
           <div class="reveal-name" style="margin-top:16px;">Você tirou</div>
@@ -180,15 +165,6 @@
           <div aria-hidden="true">🎉 🎄 🎁</div>
         </div>
         <button id="hide-button" class="secondary hidden" type="button">Esconder resultado</button>
-        <div id="receipt-panel" class="hidden" style="margin-top:22px;text-align:left;">
-          <h2 style="font-size:19px;">Aceite confirmado neste aparelho</h2>
-          <p class="subtle">Envie o código abaixo ao organizador. Ele precisa registrá-lo para concluir o sorteio. O código não contém o nome que você tirou.</p>
-          <div id="receipt-code" class="receipt"></div>
-          <div class="bottom-actions">
-            <button id="copy-receipt" class="secondary" type="button">Copiar código</button>
-            <button id="share-receipt" class="secondary whatsapp" type="button">Enviar pelo WhatsApp</button>
-          </div>
-        </div>
         <p class="participant-status">Mantenha seu resultado em segredo. Guarde o link para consultar novamente. 🤫</p>
       </section>
     </main>
@@ -200,14 +176,12 @@
       'use strict';
       const $ = id => document.getElementById(id);
       const KEY = 'amigo-oculto-organizador-v2';
-      const RECEIPT_PREFIX = 'amigo-oculto-aceite-v2:';
       const encoder = new TextEncoder(), decoder = new TextDecoder();
       const initial = () => ({version:2, revision:0, names:['','',''], draw:null});
       let state = initial(), storageOK = true, busy = false;
       const clean = s => s.trim().replace(/\s+/g,' ');
       const normalized = s => clean(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR');
       const clone = x => JSON.parse(JSON.stringify(x));
-      const completed = draw => !!draw && draw.entries.every(e => e.released && e.accepted);
       function err(message,id='form-error') {
         $(id).textContent=message; $(id).classList.toggle('show',!!message);
       }
@@ -216,7 +190,9 @@
         if(!raw) return initial();
         const s=JSON.parse(raw);
         if(s.version!==2 || !Array.isArray(s.names) || !Number.isInteger(s.revision)) throw Error('Dados inválidos');
-        if(s.draw && (!Array.isArray(s.draw.entries) || s.draw.entries.length<2 || s.draw.entries.some(e=>typeof e.person!=='string'||typeof e.link!=='string'||typeof e.code!=='string'||typeof e.released!=='boolean'||typeof e.accepted!=='boolean'))) throw Error('Sorteio inválido');
+        if(s.draw && (!Array.isArray(s.draw.entries) || s.draw.entries.length<2 || s.draw.entries.some(e=>typeof e.person!=='string'||typeof e.link!=='string'))) throw Error('Sorteio inválido');
+        // Mantém o sorteio existente e seus links, inclusive os da versão com aceite.
+        if(s.draw) s.draw.entries=s.draw.entries.map(({person,link})=>({person,link}));
         return s;
       }
       function save(next, target='form-error') {
@@ -259,20 +235,20 @@
       }
       const randomToken = () => toUrlSafe(crypto.getRandomValues(new Uint8Array(16)));
       const base = () => location.origin+location.pathname;
-      async function createLink(person, recipient, code) {
+      async function createLink(person, recipient) {
         const raw=crypto.getRandomValues(new Uint8Array(32)),iv=crypto.getRandomValues(new Uint8Array(12));
         const key=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['encrypt']);
-        const encrypted=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,encoder.encode(JSON.stringify({person,recipient,code}))));
-        return base()+'#s=2.'+toUrlSafe(raw)+'.'+toUrlSafe(iv)+'.'+toUrlSafe(encrypted);
+        const encrypted=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,encoder.encode(JSON.stringify({person,recipient}))));
+        return base()+'#s=3.'+toUrlSafe(raw)+'.'+toUrlSafe(iv)+'.'+toUrlSafe(encrypted);
       }
       async function decodeLink(hash) {
         const parts=hash.slice(3).split('.');
-        if(parts.length!==4||!['1','2'].includes(parts[0])) throw Error('Convite inválido');
+        if(parts.length!==4||!['1','2','3'].includes(parts[0])) throw Error('Convite inválido');
         const raw=fromUrlSafe(parts[1]),iv=fromUrlSafe(parts[2]),encrypted=fromUrlSafe(parts[3]);
         if(raw.length!==32||iv.length!==12||encrypted.length<17||encrypted.length>4096)throw Error('Convite inválido');
         const key=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['decrypt']);
         const data=JSON.parse(decoder.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv},key,encrypted)));
-        if(typeof data.person!=='string'||typeof data.recipient!=='string'||(parts[0]==='2'&&!/^AC-[A-Za-z0-9_-]{22}$/.test(data.code)))throw Error('Convite inválido');
+        if(typeof data.person!=='string'||typeof data.recipient!=='string')throw Error('Convite inválido');
         return data;
       }
       async function copyText(text,button) {
@@ -299,34 +275,18 @@
         });
         $('name-count').textContent=state.names.length+' pessoas';
       }
-      function statusMessage(message){$('receipt-message').textContent=message;}
-      function mutateEntry(index,operation){
-        if(!state.draw||busy)return false;
-        const next=clone(state);operation(next.draw.entries[index]);return save(next,'draw-error');
-      }
       function renderResults(){
-        const draw=state.draw,entries=draw.entries,list=$('results-list');
+        const entries=state.draw.entries,list=$('results-list');
         list.replaceChildren();
-        const count=entries.filter(e=>e.accepted).length,released=entries.filter(e=>e.released).length;
-        const pct=Math.round(100*count/entries.length);
         $('draw-count').textContent=entries.length+' pessoas';
-        $('progress-fill').style.width=pct+'%';$('progress').setAttribute('aria-valuenow',String(pct));
-        $('progress-text').textContent=released+'/'+entries.length+' links liberados • '+count+'/'+entries.length+' aceites registrados';
         entries.forEach((entry,i)=>{
           const item=node('div','result-item'),head=node('div','result-top'),tag=node('div','person-tag');
           tag.append(node('span','avatar',String(i+1).padStart(2,'0')),node('span','',entry.person));
-          const status=node('span','status'+(entry.accepted?' accepted':entry.released?' released':''),entry.accepted?'✓ Aceito':entry.released?'Aguardando aceite':'Não liberado');
-          head.append(tag,status);item.append(head);
+          head.append(tag);item.append(head);
           const actions=node('div','result-actions');
-          if(!entry.released){
-            actions.append(btn('Liberar link',()=>{if(mutateEntry(i,e=>{e.released=true;e.releasedAt=new Date().toISOString()}))renderResults();}));
-          }else{
-            actions.append(btn('Copiar link',function(){copyText(entry.link,this);}),btn('WhatsApp',()=>share('🎁 Olá, '+entry.person+'! Aceite seu convite de amigo oculto neste link:\n\n'+entry.link+'\n\nDepois, envie o código de confirmação ao organizador. Não compartilhe seu resultado!'),'secondary whatsapp'));
-          }
+          actions.append(btn('Copiar link',function(){copyText(entry.link,this);}),btn('WhatsApp',()=>share('🎁 Olá, '+entry.person+'! Seu amigo oculto está pronto. Abra seu link individual para descobrir quem você tirou:\n\n'+entry.link+'\n\n🤫 Não compartilhe seu resultado!'),'secondary whatsapp'));
           item.append(actions);list.append(item);
         });
-        $('new-draw').disabled=!completed(draw);
-        $('new-draw-help').textContent=completed(draw)?'Todos confirmaram! Você pode iniciar outro sorteio.':'Novo sorteio bloqueado até liberar todos os links e registrar todos os aceites.';
       }
       function render(){
         const active=!!state.draw;
@@ -353,8 +313,7 @@
         try{
           const targets=assign(names),entries=[];
           for(const person of names){
-            const code='AC-'+randomToken();
-            entries.push({person,link:await createLink(person,targets.get(person),code),code,released:false,accepted:false});
+            entries.push({person,link:await createLink(person,targets.get(person))});
           }
           if(state.revision!==snapshot||state.draw)throw Error('O sorteio mudou em outra aba. Tente novamente.');
           const next=clone(state);next.names=names;next.draw={id:randomToken(),createdAt:new Date().toISOString(),entries};
@@ -362,24 +321,11 @@
         }catch(e){err('Não foi possível salvar o sorteio. Confira a conexão HTTPS e tente novamente.');}
         finally{busy=false;button.disabled=false;button.textContent='✦ Fazer sorteio';}
       });
-      function register(code){
-        if(!state.draw)return statusMessage('Nenhum sorteio ativo neste navegador.');
-        const i=state.draw.entries.findIndex(e=>e.code===code.trim());
-        if(i<0)return statusMessage('Código inválido ou de outro sorteio. Confira e tente novamente.');
-        const e=state.draw.entries[i];
-        if(!e.released)return statusMessage('Libere o link deste participante antes de registrar o aceite.');
-        if(e.accepted)return statusMessage('O aceite de '+e.person+' já foi registrado.');
-        if(mutateEntry(i,x=>{x.accepted=true;x.acceptedAt=new Date().toISOString();})){
-          $('receipt-input').value='';statusMessage('✓ Aceite de '+e.person+' registrado com sucesso.');renderResults();
-        }
-      }
-      $('register-receipt').addEventListener('click',()=>register($('receipt-input').value));
-      $('receipt-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();register(e.target.value)}});
-      $('new-draw').addEventListener('click',()=>{
-        if(!completed(state.draw)||busy)return;
-        if(!window.confirm('Todos os aceites foram registrados. Iniciar outro sorteio? Os links antigos continuarão abrindo, mas esta lista será substituída.'))return;
+      $('end-draw').addEventListener('click',()=>{
+        if(!state.draw||busy)return;
+        if(!window.confirm('Encerrar o sorteio vigente? A lista de links será removida deste navegador. Os links já enviados continuarão funcionando.'))return;
         const next=initial();next.names=state.draw.entries.map(e=>e.person);
-        if(save(next,'draw-error')){err('','draw-error');statusMessage('O aceite de outro aparelho precisa ser registrado aqui.');render();}
+        if(save(next,'draw-error')){err('','draw-error');err('');render();}
       });
       window.addEventListener('storage',e=>{
         if(e.key!==KEY||location.hash.startsWith('#s='))return;
@@ -387,40 +333,16 @@
       });
       async function setupParticipant(){
         $('organizer-screen').style.display='none';$('participant-screen').style.display='block';
-        let data=null,accepted=false;
         const reveal=$('reveal-button');
-        function showResult(){
+        let data=null;
+        reveal.disabled=true;
+        try{data=await decodeLink(location.hash);reveal.disabled=false;}
+        catch(e){err('Convite inválido. Peça um novo link ao organizador.','participant-error');return;}
+        reveal.addEventListener('click',()=>{
           $('sender-name').textContent='Para '+data.person;$('recipient-name').textContent=data.recipient;
           $('revealed').classList.remove('hidden');$('hide-button').classList.remove('hidden');reveal.classList.add('hidden');
-        }
-        function showReceipt(){
-          if(!data.code)return;
-          $('receipt-code').textContent=data.code;$('receipt-panel').classList.remove('hidden');
-        }
-        try{
-          data=await decodeLink(location.hash);
-          if(!data.code){$('invite-lead').textContent='Este é um convite anterior à atualização. Você pode revelar seu resultado normalmente.';reveal.textContent='✨ Revelar meu amigo oculto';}
-          else{
-            try{accepted=localStorage.getItem(RECEIPT_PREFIX+data.code)==='1';}catch(e){}
-            if(accepted){showReceipt();reveal.textContent='✨ Revelar meu amigo oculto';}
-          }
-        }catch(e){err('Convite inválido. Peça um novo link ao organizador.','participant-error');reveal.disabled=true;return;}
-        reveal.addEventListener('click',()=>{
-          if(data.code&&!accepted){
-            try{localStorage.setItem(RECEIPT_PREFIX+data.code,'1');}
-            catch(e){err('Não foi possível salvar o aceite neste aparelho. Ative os dados do site e tente novamente.','participant-error');return;}
-            accepted=true;showReceipt();
-            // Se o organizador estiver usando o mesmo navegador, registre automaticamente.
-            try{
-              const latest=load(),i=latest.draw?.entries.findIndex(e=>e.code===data.code&&e.released&&!e.accepted)??-1;
-              if(i>=0){state=latest;const next=clone(latest);next.draw.entries[i].accepted=true;next.draw.entries[i].acceptedAt=new Date().toISOString();save(next,'participant-error');}
-            }catch(e){}
-          }
-          showResult();
         });
         $('hide-button').addEventListener('click',()=>{$('revealed').classList.add('hidden');$('hide-button').classList.add('hidden');reveal.classList.remove('hidden');reveal.textContent='✨ Revelar novamente';});
-        $('copy-receipt').addEventListener('click',function(){if(data?.code&&accepted)copyText(data.code,this);});
-        $('share-receipt').addEventListener('click',()=>{if(data?.code&&accepted)share('🎁 Confirmei meu amigo oculto!\nParticipante: '+data.person+'\nCódigo: '+data.code);});
       }
       if(location.hash.startsWith('#s='))setupParticipant();
       else{
