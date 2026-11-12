@@ -1,50 +1,44 @@
-# Amigo Oculto — sorteador para 3 pessoas
+# Amigo Oculto — sorteador online
 
-Site estático (um único `index.html`), responsivo e pronto para publicar, sem Node, backend, contas ou banco de dados.
+Site estático responsivo para organizar um amigo oculto com 2 ou mais participantes, sem limite fixo de pessoas. Funciona no GitHub Pages, sem backend, Node.js ou banco de dados.
 
-## Funcionalidades
+## Como usar
 
-- Recebe exatamente 3 nomes distintos.
-- Sorteio criptograficamente aleatório, em ciclo de 3: cada pessoa tira uma pessoa diferente, e todos são sorteados uma vez.
-- Cria três links individuais; o organizador vê os links, mas não os resultados na tela.
-- A pessoa abre seu link e clica em **Revelar meu amigo oculto**.
-- Links cifrados localmente com AES-256-GCM usando Web Crypto API. O segredo para abrir o resultado está contido no próprio link.
-- Botões **Copiar link**, **Enviar no WhatsApp**, **Copiar todos os links** e **Salvar em TXT**.
+1. Cadastre os nomes (no mínimo 2). Adicione ou remova participantes.
+2. Clique em **Fazer sorteio**. O site cria um ciclo aleatório: ninguém tira o próprio nome e cada pessoa é sorteada uma vez.
+3. Libere o link individual de cada participante e copie ou envie pelo WhatsApp.
+4. O participante abre seu convite, aceita e revela o resultado. Seu aceite gera um código individual (AC-...).
+5. Ele envia o código ao organizador pelo WhatsApp ou outro meio. No painel, cole o código em **Registrar aceite do participante**.
+6. O painel registra o aceite e atualiza o progresso. O próximo sorteio só é permitido após todos os links serem liberados e todos os aceites serem registrados.
 
-## Publicação mais fácil: Netlify Drop
+## Persistência e privacidade
 
-1. Entre em https://app.netlify.com/drop
-2. Envie o arquivo `index.html` ou arraste a pasta `amigo-oculto-3`.
-3. Abra o endereço publicado, normalmente terminado em `.netlify.app`.
-4. **Só faça o sorteio depois de publicar**, para que os links já apontem ao endereço público.
-5. Cadastre os nomes, sorteie, envie cada link individualmente por WhatsApp e guarde uma cópia dos links.
+- Os nomes, sorteio ativo, links, estados de liberação e aceites ficam no LocalStorage do navegador do organizador.
+- O sorteio não é apagado automaticamente ao recarregar, fechar ou concluir a página. Após a conclusão, o organizador pode escolher iniciar outro sorteio.
+- Se o participante aceitar em outra aba do mesmo navegador e perfil do organizador, o aceite é registrado automaticamente quando possível. Em outro dispositivo, o código precisa ser enviado e registrado manualmente.
+- O aceite do participante também é salvo no navegador dele. O link continua válido após recarregar.
+- LocalStorage não é um banco de dados compartilhado: apagar os dados do site, trocar de dispositivo ou perfil, ou usar navegação anônima pode causar perda de dados. Use o mesmo navegador e endereço do site.
+- Links v1, gerados antes desta atualização, ainda podem revelar o resultado, mas não possuem código de confirmação e não são recuperáveis se o sorteio antigo já foi perdido.
+- Cada convite contém somente o resultado individual e seu código, protegido com AES-GCM. A chave está no próprio link: qualquer pessoa que tenha acesso ao link pode revelar o resultado. Não compartilhe os links em grupos.
+- Liberação e aceite são controles locais de fluxo, não autenticação ou prova de identidade. Um organizador com acesso técnico aos links pode inspecioná-los.
 
-## Publicação alternativa: Cloudflare Pages
+## Publicar no GitHub Pages
 
-1. Acesse Cloudflare > **Workers & Pages** > **Create application** > **Get started** > **Drag and drop your files**.
-2. Faça upload desta pasta ou do ZIP.
-3. Escolha o nome do projeto e publique.
-4. Abra o domínio `.pages.dev` fornecido e faça o sorteio por lá.
+O workflow em `.github/workflows/deploy-pages.yml` publica automaticamente a branch main.
 
-## Testar localmente
+1. No repositório, abra **Settings → Pages**.
+2. Em **Build and deployment**, selecione **GitHub Actions**.
+3. Em **Actions**, execute **Publicar Sorteador (GitHub Pages)** se necessário.
+4. Acompanhe a execução até a publicação.
 
-Abra `index.html` com um navegador moderno. Para maior compatibilidade, prefira servir em `http://localhost` (que é considerado um contexto seguro) ou em um site HTTPS. O aplicativo precisa de **Web Crypto API**.
+Endereço previsto: https://ilgnerbecheleni.github.io/sorteador/
 
-## Cuidados importantes
+O plano GitHub Free exige repositório público para GitHub Pages. Um repositório privado pode exigir um plano compatível. O sorteio e os convites não são gravados no repositório.
 
-- **Os links não ficam salvos no servidor**: salve o TXT antes de fechar ou atualizar a página.
-- **Qualquer pessoa com acesso a um link poderá abrir aquele resultado.** Envie cada link apenas ao destinatário certo. O link é um segredo de acesso, não um login.
-- Links criados antes de mudar o endereço/domínio do site continuarão apontando para o endereço antigo. Sorteie de novo após a publicação definitiva.
-- Não há botão para invalidar um link enviado: para trocar os resultados, gere um novo sorteio e avise a todos para desconsiderar os links anteriores.
-- Com **exatamente 3 pessoas**, há apenas **duas distribuições possíveis** em que ninguém tira a si mesmo. Portanto, conhecendo os três nomes e apenas um par, alguém consegue deduzir os outros dois. O aplicativo protege os links de exposição casual, mas **não é possível garantir sigilo matemático dos resultados entre três participantes**.
-- Se o organizador tiver acesso a todos os links, tecnicamente poderá abri-los para conhecer os resultados, embora o painel não os exiba.
+## Arquitetura
 
-## Estrutura
-
-```
-amigo-oculto-3/
-├── index.html
-└── README.md
-```
-
-Não há bibliotecas externas nem serviços pagos.
+- HTML, CSS e JavaScript nativos em `index.html`
+- LocalStorage para persistência do organizador e do participante
+- Web Crypto API (AES-GCM, números aleatórios seguros)
+- HTTPS necessário para o funcionamento da Web Crypto API
+- GitHub Actions para deploy estático
